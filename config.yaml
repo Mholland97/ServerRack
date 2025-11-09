@@ -1,0 +1,71 @@
+# Raspberry Pi Cluster Configuration
+
+cluster:
+  name: "ServerRack"
+
+# Define all Raspberry Pis in the cluster
+nodes:
+  - id: "pi-main"
+    hostname: "raspberrypi-main.local"
+    ip: "192.168.1.100"
+    role: "controller"
+    has_ssd: true
+    ssd_mount: "/mnt/nvme"
+    ssh_user: "pi"
+    ssh_port: 22
+
+  - id: "pi-storage"
+    hostname: "raspberrypi-storage.local"
+    ip: "192.168.1.101"
+    role: "worker"
+    has_ssd: true
+    ssd_mount: "/mnt/nvme"
+    ssh_user: "pi"
+    ssh_port: 22
+
+  - id: "pi-worker1"
+    hostname: "raspberrypi-worker1.local"
+    ip: "192.168.1.102"
+    role: "worker"
+    has_ssd: false
+    ssh_user: "pi"
+    ssh_port: 22
+
+  - id: "pi-worker2"
+    hostname: "raspberrypi-worker2.local"
+    ip: "192.168.1.103"
+    role: "worker"
+    has_ssd: false
+    ssh_user: "pi"
+    ssh_port: 22
+
+# Ollama Configuration
+ollama:
+  default_model: "deepseek-r1:7b"
+  available_models:
+    - "deepseek-r1:7b"
+    - "gemma2:9b"
+    - "mistral:7b"
+  host: "localhost"
+  port: 11434
+
+# File Synchronization
+sync:
+  enabled: true
+  source_node: "pi-main"
+  target_nodes:
+    - "pi-storage"
+  sync_paths:
+    - "/mnt/nvme/shared"
+  interval: 300  # seconds
+
+# Resource Monitoring
+monitoring:
+  enabled: true
+  interval: 5  # seconds
+  metrics:
+    - "cpu"
+    - "memory"
+    - "temperature"
+    - "disk"
+    - "network"

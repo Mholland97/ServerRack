@@ -1,0 +1,28 @@
+[Unit]
+Description=ServerRack Raspberry Pi Cluster Control
+Documentation=https://github.com/your-repo/ServerRack
+After=network-online.target ollama.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/ServerRack
+Environment="DISPLAY=:0"
+Environment="XAUTHORITY=/home/pi/.Xauthority"
+ExecStart=/home/pi/ServerRack/run.sh
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security options
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/pi/ServerRack
+
+[Install]
+WantedBy=graphical.target
